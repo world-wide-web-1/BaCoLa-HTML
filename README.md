@@ -7,6 +7,7 @@
 # <p id="about"></p>About BaCoLa HTML
 > BaCoLa HTML is based off of my [original project](https://github.com/world-wide-web-1/BaCoLa), but I had realized that because I built the interpreter in JavaScript, I could possibly write the language to support HTML pages.\
 > And, here we are, it's written in basically all the same way.
+> [GitHub Website](https://world-wide-web-1.github.io/BaCoLa-HTML/)
 > ### <p id="differences"></p>Differences
 > > There are some functions compared to the original version,\
 > > but it is basically the same. This version removes some functions\
