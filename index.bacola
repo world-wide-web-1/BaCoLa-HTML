@@ -1,0 +1,5 @@
+print = "Example Script executing!"
+example = "Executed!"
+p = (createElement "span").
+setInnerText p = "Hello, World!".
+appendChild documentElement = p.

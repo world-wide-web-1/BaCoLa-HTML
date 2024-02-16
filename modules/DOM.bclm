@@ -1,0 +1,76 @@
+native function createElement
+  (ARGS) => {
+    return document.createElement(ARGS.type);
+  }
+
+constructor createElement ({createElement $1},{[["1","type"]]},{["type"]})
+
+native function querySelect
+  (ARGS) => {
+    return document.querySelector(ARGS.selector)
+  }
+
+constructor querySelect ({CSSSelect $1},{[["1","selector"]]},{["selector"]})
+
+native function getInnerText
+  (ARGS) => {
+    return ARGS.element.innerText
+  }
+
+constructor getInnerText ({getInnerText $1},{[["1","element"]]},{["element"]})
+
+native function getInnerHTML
+  (ARGS) => {
+    return ARGS.element.innerHTML
+  }
+
+constructor getInnerHTML ({getInnerHTML $1},{[["1","element"]]},{["element"]})
+
+native function setInnerText
+  (ARGS) => {
+    ARGS.element.innerText = ARGS.value;
+  }
+
+constructor setInnerText ({setInnerText $1 = $2.},{[["1","element"],["2","value"]]},{["element","value"]})
+
+native function setInnerHTML
+  (ARGS) => {
+    ARGS.element.innerHTML = ARGS.value;
+  }
+
+constructor setInnerHTML ({setInnerHTML $1 = $2.},{[["1","element"],["2","value"]]},{["element","value"]})
+
+native function setAttribute
+  (ARGS) => {
+    ARGS.element.setAttribute(ARGS.attribute, ARGS.value);
+  }
+
+constructor setAttribute ({setAttribute $1 = $2 $3.},{[["1","element"],["2","attribute"],["3","value"]]},{["element","attribute","value"]})
+
+native function getAttribute
+  (ARGS) => {
+    ARGS.element.getAttribute(ARGS.value);
+  }
+
+constructor getAttribute ({getAttribute $1 = $2},{[["1","element"],["2","value"]]},{["element","value"]})
+
+native function appendChild
+  (ARGS) => {
+    ARGS.element.appendChild(ARGS.value);
+  }
+
+constructor appendChild ({appendChild $1 = $2.},{[["1","element"],["2","value"]]},{["element","value"]})
+
+native function documentElement
+  (ARGS) => {
+    return document.documentElement
+  }
+
+constructor documentElement ({documentElement},{[]},{[]})
+
+native function document
+  (ARGS) => {
+    return document
+  }
+
+constructor document ({document},{[]},{[]})

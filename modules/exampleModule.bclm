@@ -1,0 +1,7 @@
+native function example
+  (ARGS) => {
+    //JavaScript code
+    console.log(ARGS.txt)
+  }
+
+constructor example ({example = $1.},{[["1", "txt"]]},{["txt"]})
