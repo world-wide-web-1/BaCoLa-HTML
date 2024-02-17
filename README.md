@@ -13,7 +13,7 @@
 > > but it is basically the same. This version removes some functions\
 > > for things like filesystems, etc.\
 > > This also disables most (all?) module commands.\
-> > If you want to load a module, you should use `<bacola_module src="[path]"></bacola_module>`\
+> > If you want to load a module, you should use `<bacola_module src="[path]"></bacola_module>`
 > ### <p id="documentations"></p>Documentations
 > > Whenever you want to manually run a file, use the JavaScript `executeBaCoLa` function.
 > > ```
