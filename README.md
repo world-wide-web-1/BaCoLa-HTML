@@ -31,3 +31,5 @@
 > > [arrays_documentation.md](modules/arrays_documentation.md)\
 > > [math_documentation.md](modules/math_documentation.md)\
 > > [dom_documentation.md](modules/dom_documentation.md)
+# Remember this, it is **very** bad to plagiarize.
+###### The original repository lives [here](https://github.com/world-wide-web-1/BaCoLa-HTML)
