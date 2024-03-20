@@ -1594,7 +1594,7 @@ function mapParam(map,param) {
   return '[UN-NAMED PARAMS]';
 }
 
-function readFunction(txt, lvl, ln, isfn) {
+function readFunction(txt, lvl, ln) {
   var constructors_joined = constructors;
   for (var i = 0; i < importedModules.length; i++) {
     var arr = m_constructors[importedModules[i][0]];
@@ -1602,80 +1602,81 @@ function readFunction(txt, lvl, ln, isfn) {
       constructors_joined.push(arr[j]);
     }
   }
-  if(txt=="") {
+  if (txt === "") {
     return "";
   }
-  //console.log(txt);
+
   let curr = {};
   let fn = '';
   let map = [];
   let evalParams = false;
-  for(let l=0; l<constructors_joined.length; l++) {
 
+  for (let l = 0; l < constructors_joined.length; l++) {
     try {
-      //console.log(txt);
-      curr = splitFromConstructor(txt,constructors_joined[l][1]);
+      curr = splitFromConstructor(txt, constructors_joined[l][1]);
       fn = constructors_joined[l][0];
-      if ((lvl == 0 && (fn == "name" || fn == "native" || fn == "constructor" || fn == "setlockedvar" || fn == "setlockedvar2" || fn == "savedefvars." || fn == "savedefvars")) || (lvl == 1 && (fn == "setlockedvar" || fn == "setlockedvar2" || fn == "savedefvars." || fn == "savedefvars")) || (lvl == 2 && (false))){
+      if ((lvl === 0 && (fn === "name" || fn === "native" || fn === "constructor" || fn === "setlockedvar" || fn === "setlockedvar2" || fn === "savedefvars." || fn === "savedefvars")) || (lvl === 1 && (fn === "setlockedvar" || fn === "setlockedvar2" || fn === "savedefvars." || fn === "savedefvars")) || (lvl === 2 && (false))) {
         if (!ignore) {
-          console.log("%s",`ExecutionError: Function does not exist (L${ln}): \n\n${txt}\n`);
-        if (variables.stopOnError.value){
-            return;
+          console.log("\x1b[31m%s\x1b[0m", `ExecutionError: Function does not exist (L${ln}): \n\n${txt}\n`);
+          if (variables.stopOnError.value) {
+            process.exit();
           }
         }
       }
       evalParams = constructors_joined[l][1].evalParams;
       map = constructors_joined[l][1].map;
     } catch(err) {
-      if(err == 'Incorrect constructor') {
+      if (err === 'Incorrect constructor') {
         continue;
       } else if (constructors_joined[l] === null || constructors[l] === undefined) {
         if (!ignore) {
-            console.log("%s",`ExecutionError: Function does not exist (L${ln}): \n\n${txt}\n`);
-        if (variables.stopOnError.value){
-            return;
+          console.log("\x1b[31m%s\x1b[0m", `ExecutionError: Function does not exist (L${ln}): \n\n${txt}\n`);
+          if (variables.stopOnError.value) {
+            process.exit();
           }
         }
       } else {
         if (!ignore) {
-          console.log("%s",`ExecutionError: ${err} (L${ln}): \n\n${txt}\n`);
-          if (variables.stopOnError.value){
-            return;
+          console.log("\x1b[31m%s\x1b[0m", `ExecutionError: ${err} (L${ln}): \n\n${txt}\n`);
+          if (variables.stopOnError.value) {
+            process.exit();
           }
         }
       }
     }
   }
+
   let ncurr = {};
 
-  for(let l in curr) {
-    ncurr[mapParam(map,l)] = curr[l];
+  for (let l in curr) {
+    ncurr[mapParam(map, l)] = curr[l];
   }
-  if(evalParams) {
-    for(let l of evalParams) {
+
+  if (evalParams) {
+    for (let l of evalParams) {
       ncurr[l] = readFunction(ncurr[l]);
     }
   }
-  if(fn!='' && fn!="input") {
+
+  if (fn !== '' && fn !== "input") {
     try {
       var data = fns[fn](ncurr);
       return data;
     } catch(err) {
       if (!ignore) {
-          console.log("%s",`ExecutionError: Function does not exist (L${ln}): \n\n${txt}\n`);
-      if (variables.stopOnError.value){
-          return;
+        console.log("\x1b[31m%s\x1b[0m", `ExecutionError: Function does not exist (L${ln}): \n\n${txt}\n`);
+        if (variables.stopOnError.value) {
+          process.exit();
         }
       }
     }
-  } else if(fn=="input") {
+  } else if (fn === "input") {
     return prompt(ncurr.prompt);
   } else {
-    //throw Error('Function does not exist.')
     if (!ignore) {
-      console.log("%s",`ExecutionError: Function does not exist (CODE-BLOCK_ID::${ln}): \n\n\x1b[1m\x1b[31m${txt}\n`);
-      if (variables.stopOnError.value){
-        return;
+      console.log("\x1b[31m%s\x1b[0m", `ExecutionError: Function does not exist (CODE-BLOCK_ID::${ln}): \n\n\x1b[1m\x1b[31m${txt}\n`);
+      if (variables.stopOnError.value) {
+        process.exit();
       }
     }
   }

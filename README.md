@@ -1,5 +1,5 @@
 # BaCoLa HTML
-
+### Note: This programming language doesn't work on Windows for some reason, I am trying to fix it.
 - [About BaCoLa HTML](#about)
   - [Differences](#differences)
   - [Documentations](#documentations)
