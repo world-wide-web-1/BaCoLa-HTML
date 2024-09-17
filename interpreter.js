@@ -556,6 +556,26 @@ newConstructor('EvalJS',{
     evalParams: []
 });
 
+newConstructor('javascript',{
+    paren: [{
+      open: '(',
+      close: ')'
+    },
+    {
+      open: '[',
+      close: ']'
+    },
+    {
+      open: '{',
+      close: '}'
+    }],
+    quoteSets: ['"',"'",'`'],
+    whitespace: [' ','  ','	','	'],
+    c: 'javascript {$1}',
+    map: [['1','txt']],
+    evalParams: []
+});
+
 newConstructor('EvalJS2',{
     paren: [{
       open: '(',
@@ -1138,6 +1158,14 @@ newConstructor('importJS',{
 });
 
 let fns = {
+  codeBlock: (ARGS) => {
+    let program = ARGS.code;
+    let _l = compileLines(program,syntaxoptions);
+    _l = compileLines(program,syntax);
+    for(let [i, line] of _l.entries()) {
+      readFunction(line, false, i);
+    }
+  },
   native: (ARGS) => {
     //console.log(ARGS.code.trim('\n').trim())
     //fns[ARGS.name] = Function("return "+ARGS.code.trim('\n').trim())();
@@ -1148,6 +1176,12 @@ let fns = {
   },
   or: (ARGS) => {
     return ARGS.a || ARGS.b;
+  },
+  javascript: (ARGS) => {
+    return eval(ARGS.code);
+  },
+  status: (ARGS) => {
+    variables.status = ARGS.bool;
   },
   not: (ARGS) => {
     return !ARGS.a;
@@ -1615,7 +1649,7 @@ function readFunction(txt, lvl, ln) {
     try {
       curr = splitFromConstructor(txt, constructors_joined[l][1]);
       fn = constructors_joined[l][0];
-      if ((lvl === 0 && (fn === "name" || fn === "native" || fn === "constructor" || fn === "setlockedvar" || fn === "setlockedvar2" || fn === "savedefvars." || fn === "savedefvars")) || (lvl === 1 && (fn === "setlockedvar" || fn === "setlockedvar2" || fn === "savedefvars." || fn === "savedefvars")) || (lvl === 2 && (false))) {
+      if ((lvl === 0 && (fn === "name" || fn === "native" || fn === "constructor" || fn === "setlockedvar" || fn === "setlockedvar2" || fn === "savedefvars." || fn === "savedefvars" || fn == "javascript")) || (lvl === 1 && (fn === "setlockedvar" || fn === "setlockedvar2" || fn === "savedefvars." || fn === "savedefvars")) || (lvl === 2 && (false))) {
         if (!ignore) {
           console.log("\x1b[31m%s\x1b[0m", `ExecutionError: Function does not exist (L${ln}): \n\n${txt}\n`);
           if (variables.stopOnError.value) {
@@ -1782,12 +1816,12 @@ async function executeBaCoLa(src, level) {
 }
 
 var read = async () => {
-  window.onload = async () => {
   var style = document.createElement("style");
   style.innerText = `bacola, bacola_module {
     display: none;
   }`;
   document.documentElement.appendChild(style);
+  document.addEventListener('DOMNodeInserted', (event)=>{
   try {
     var data = await fetch("language");
     var program = await data.text();
@@ -1795,23 +1829,41 @@ var read = async () => {
     for (let [i, line] of _l.entries()) {
       await readFunction(line, 2, i + 1);
     }
-    const elements1 = document.querySelectorAll("bacola_module");
+    const elements1 = [];
+    if (event.target.tagName == "BACOLA_MODULE") elements1.append(event.target);
     for (let d = 0; d < elements1.length; d++) {
-      var data = await fetch(elements1[d].getAttribute("src"));
-      program = await data.text();
-      _l = compileLines(program, syntax);
-
-      for (let [i, line] of _l.entries()) {
-        await readFunction(line, 1, i + 1);
+      if (elements1[d].getAttribute("src") != null) {
+        var data = await fetch(elements1[d].getAttribute("src"));
+        program = await data.text();
+        _l = compileLines(program, syntax);
+        for (let [i, line] of _l.entries()) {
+          await readFunction(line, 1, i + 1);
+        }
+      } else {
+        program = elements1[d].innerText;
+        _l = compileLines(program, syntax);
+        for (let [i, line] of _l.entries()) {
+          await readFunction(line, 1, i + 1);
         }
       }
-      const elements = document.querySelectorAll("bacola");
-      for (let d = 0; d < elements.length; d++) {
+    }
+
+    const elements = [];
+    if (event.target.tagName == "BACOLA") elements1.append(event.target);
+    for (let d = 0; d < elements.length; d++) {
+      if (elements[d].getAttribute("src") != null) {
         var data = await fetch(elements[d].getAttribute("src"));
         program = await data.text();
         _l = compileLines(program, syntax);
         for (let [i, line] of _l.entries()) {
-        await readFunction(line, variables.executionLevel.value, i + 1);
+          await readFunction(line, variables.executionLevel.value, i + 1);
+        }
+      } else {
+        program = elements[d].innerText;
+        _l = compileLines(program, syntax);
+        for (let [i, line] of _l.entries()) {
+          await readFunction(line, variables.executionLevel.value, i + 1);
+        }
       }
     }
   } catch (err) {
@@ -1822,7 +1874,7 @@ var read = async () => {
       }
     }
   }
-  }
+  });
 };
 
 read();
