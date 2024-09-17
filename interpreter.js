@@ -1908,6 +1908,8 @@ var read = async () => {
     }
   }
   };
+  var observer = new MutationObserver(update);
+  observer.observe(document, { attributes: false, childList: true, subtree: true });
 };
 
 read();
