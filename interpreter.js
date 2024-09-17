@@ -1821,7 +1821,6 @@ var read = async () => {
     display: none;
   }`;
   document.documentElement.appendChild(style);
-  document.addEventListener('DOMNodeInserted', (event)=>{
   try {
     var data = await fetch("language");
     var program = await data.text();
@@ -1829,7 +1828,39 @@ var read = async () => {
     for (let [i, line] of _l.entries()) {
       await readFunction(line, 2, i + 1);
     }
-    const elements1 = [];
+  } catch (err) {
+    if (!ignore) {
+      console.error("%s", `ExecutionError: ${err}`);
+      if (variables.stopOnError.value) {
+        return;
+      }
+    }
+  }
+  var modules = {
+    loaded: [],
+    unloaded: []
+  };
+  var scripts = {
+    loaded: [],
+    unloaded: []
+  }
+  async function update (event)=>{
+  var module_elements = document.querySelectorAll("bacola_module");
+  var bacola_elements = document.querySelectorAll("bacola");
+  for (var i = 0; i < module_elements.length; i++) {
+    if (!modules.loaded.includes(module_elements[i])) {
+      modules.unloaded.append(module_elements[i]);
+      modules.loaded.append(module_elements[i]);
+    }
+  }
+  for (var i = 0; i < bacola_elements.length; i++) {
+    if (!modules.loaded.includes(bacola_elements[i])) {
+      scripts.unloaded.append(bacola_elements[i]);
+      scripts.loaded.append(bacola_elements[i]);
+    }
+  }
+  try {
+    const elements1 = modules.unloaded;
     if (event.target.tagName == "BACOLA_MODULE") elements1.append(event.target);
     for (let d = 0; d < elements1.length; d++) {
       if (elements1[d].getAttribute("src") != null) {
@@ -1848,7 +1879,7 @@ var read = async () => {
       }
     }
 
-    const elements = [];
+    const elements = scripts.unloaded;
     if (event.target.tagName == "BACOLA") elements1.append(event.target);
     for (let d = 0; d < elements.length; d++) {
       if (elements[d].getAttribute("src") != null) {
@@ -1866,6 +1897,8 @@ var read = async () => {
         }
       }
     }
+    modules.unloaded = [];
+    modules.loaded = [];
   } catch (err) {
     if (!ignore) {
       console.error("%s", `ExecutionError: ${err}`);
@@ -1874,7 +1907,7 @@ var read = async () => {
       }
     }
   }
-  });
+  };
 };
 
 read();
