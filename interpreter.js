@@ -1791,13 +1791,31 @@ function compileLines(txt,c) {
 }
 
 async function executeBaCoLa(src, level) {
-  try {
+  /*try*/ if(1) {
     var data = await fetch(src);
     var program = await data.text();
     _l = compileLines(program, syntax);
 
     for (let [i, line] of _l.entries()) {
       await readFunction(line, level ? level : 0, i + 1);
+    }
+  }/* catch (err) {
+    if (!ignore) {
+      console.error("%s", `ExecutionError: ${err}`);
+      if (variables.stopOnError.value) {
+        return;
+      }
+    }
+  }*/
+}
+
+var init = async () => {
+  try {
+    var data = await fetch("https://raw.githubusercontent.com/world-wide-web-1/BaCoLa-HTML/refs/heads/main/language");
+    var program = await data.text();
+    let _l = compileLines(program, syntaxoptions);
+    for (let [i, line] of _l.entries()) {
+      await readFunction(line, 2, i + 1);
     }
   } catch (err) {
     if (!ignore) {
@@ -1807,24 +1825,6 @@ async function executeBaCoLa(src, level) {
       }
     }
   }
-}
-
-var init = async () => {
-  //try {
-    var data = await fetch("https://raw.githubusercontent.com/world-wide-web-1/BaCoLa-HTML/refs/heads/main/language");
-    var program = await data.text();
-    let _l = compileLines(program, syntaxoptions);
-    for (let [i, line] of _l.entries()) {
-      await readFunction(line, 2, i + 1);
-    }
-  /*} catch (err) {
-    if (!ignore) {
-      console.error("%s", `ExecutionError: ${err}`);
-      if (variables.stopOnError.value) {
-        return;
-      }
-    }
-  }*/
 };
 
 init();
