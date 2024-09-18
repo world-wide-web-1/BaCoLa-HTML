@@ -1823,13 +1823,13 @@ var init = async () => {
 init();
 
 const processBacolaScript = async (script) => {
-  const program = script.hasAttribute('src') ? await fetchContent(script.getAttribute('src')) : script.innerText;
+  const program = script.hasAttribute('src') ? await fetchContent(script.getAttribute('src')) : script.innerText.trim();
   const lines = compileLines(program, syntaxoptions);
   for (let [i, line] of lines.entries()) await readFunction(line, variables.executionLevel.value, i + 1);
 };
 
 const processBacolaModule = async (module) => {
-  const program = module.hasAttribute('src') ? await fetchContent(module.getAttribute('src')) : module.innerText;
+  const program = module.hasAttribute('src') ? await fetchContent(module.getAttribute('src')) : module.innerText.trim();
   const lines = compileLines(program, syntax);
   for (let [i, line] of lines.entries()) await readFunction(line, 1, i + 1);
 };
