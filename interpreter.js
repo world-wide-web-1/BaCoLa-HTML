@@ -1817,7 +1817,7 @@ async function executeBaCoLa(src, level) {
 
 var init = async () => {
   try {
-    var data = await fetch("https://world-wide-web-1.github.io/BaCoLa-HTML/language");
+    var data = await fetch("language");
     var program = await data.text();
     let _l = compileLines(program, syntaxoptions);
     for (let [i, line] of _l.entries()) {
