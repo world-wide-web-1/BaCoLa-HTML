@@ -1846,16 +1846,41 @@ const fetchContent = async (src) => {
   return await response.text();
 };
 
-const processScriptsOnLoad = async () => {
-  document.querySelectorAll('script[type="text/bacola"]').forEach(async (script) => {
-    if (script.hasAttribute('defer')) document.addEventListener('DOMContentLoaded', () => processBacolaScript(script));
-    else script.src ? script.addEventListener('load', () => processBacolaScript(script)) : processBacolaScript(script);
-  });
-
-  document.querySelectorAll('script[type="text/bacola-module"]').forEach(async (module) => {
-    if (module.hasAttribute('defer')) document.addEventListener('DOMContentLoaded', () => processBacolaModule(module));
-    else module.src ? module.addEventListener('load', () => processBacolaModule(module)) : processBacolaModule(module);
-  });
+const processScriptElement = (element) => {
+  if (element.tagName === 'SCRIPT' && element.type === 'text/bacola-script') {
+    if (element.hasAttribute('defer')) {
+      document.addEventListener('DOMContentLoaded', () => {
+        if (element.src) element.addEventListener('load', () => processBacolaScript(element));
+        else processBacolaScript(element);
+      });
+    } else {
+      if (element.src) element.addEventListener('load', () => processBacolaScript(element));
+      else processBacolaScript(element);
+    }
+  } else if (element.tagName === 'SCRIPT' && element.type === 'text/bacola-module') {
+    if (element.hasAttribute('defer')) {
+      document.addEventListener('DOMContentLoaded', () => {
+        if (element.src) element.addEventListener('load', () => processBacolaModule(element));
+        else processBacolaModule(element);
+      });
+    } else {
+      if (element.src) element.addEventListener('load', () => processBacolaModule(element));
+      else processBacolaModule(element);
+    }
+  }
 };
 
-processScriptsOnLoad();
+const observer = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    mutation.addedNodes.forEach((node) => {
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        processScriptElement(node);
+        if (node.querySelectorAll) {
+          node.querySelectorAll('script[type="text/bacola"], script[type="text/bacola-module"]').forEach(processScriptElement);
+        }
+      }
+    });
+  });
+});
+
+observer.observe(document, { childList: true, subtree: true });
