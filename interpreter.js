@@ -1841,7 +1841,9 @@ class Bacola extends HTMLScriptElement {
   }
 
   async connectedCallback() {
-    await this.loadContent();
+    setTimeout(() => {
+      await this.loadContent();
+    });
   }
 
   async loadContent() {
@@ -1864,7 +1866,9 @@ class BacolaModule extends HTMLScriptElement {
   }
 
   async connectedCallback() {
-    await this.loadContent();
+    setTimeout(() => {
+      await this.loadContent();
+    });
   }
 
   async loadContent() {
