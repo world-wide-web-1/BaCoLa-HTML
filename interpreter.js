@@ -1790,58 +1790,24 @@ function compileLines(txt,c) {
 
 }
 
-async function executeBaCoLa(src, level) {
-  if(1) {
-    var data = await fetch(src);
-    var program = await data.text();
-    _l = compileLines(program, syntax);
-
-    for (let [i, line] of _l.entries()) {
-      await readFunction(line, level ? level : 0, i + 1);
-    }
-  }
-}
-
-const fetchContent = async (src) => {
-  const response = await fetch(src);
-  return await response.text();
-};
-
-const processBacola = async (element, type, executionLevel) => {
-  const program = element.hasAttribute('src') 
-    ? await fetchContent(element.getAttribute('src')) 
-    : element.innerText.trim();
-    
-  const lines = compileLines(program, type === 'script' ? syntaxoptions : syntax);
-  for (let [i, line] of lines.entries()) {
-    await readFunction(line, executionLevel, i + 1);
-  }
-};
-
 const handleScriptElement = (element) => {
   if (element.tagName === 'SCRIPT') {
     const type = element.type;
     const isBacolaScript = type === 'text/bacola-script';
     const isBacolaModule = type === 'text/bacola-module';
-    
     if (isBacolaScript || isBacolaModule) {
       const executionLevel = isBacolaScript ? variables.executionLevel.value : 1;
       const handler = () => processBacola(element, type, executionLevel);
-
-      if (element.hasAttribute('defer')) {
-        document.addEventListener('DOMContentLoaded', () => {
-          if (element.src) element.addEventListener('load', handler);
-          else handler();
-        });
+      if (element.src) {
+        element.addEventListener('load', handler);
       } else {
-        if (element.src) element.addEventListener('load', handler);
-        else handler();
+        handler();
       }
     }
   }
 };
 
-var init = async () => {
+const init = async () => {
   try {
     var data = await fetch("language");
     var program = await data.text();
@@ -1849,18 +1815,22 @@ var init = async () => {
     for (let [i, line] of lines.entries()) {
       await readFunction(line, 2, i + 1);
     }
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        mutation.addedNodes.forEach((node) => {
-          if (node.nodeType === Node.ELEMENT_NODE) {
-            handleScriptElement(node);
-            node.querySelectorAll('script[type="text/bacola-script"], script[type="text/bacola-module"]')
-              .forEach(handleScriptElement);
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('script[type="text/bacola-script"], script[type="text/bacola-module"]')
+        .forEach(handleScriptElement);
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              handleScriptElement(node);
+              node.querySelectorAll('script[type="text/bacola-script"], script[type="text/bacola-module"]')
+                .forEach(handleScriptElement);
             }
+          });
         });
       });
+      observer.observe(document.documentElement, { childList: true, subtree: true });
     });
-    observer.observe(document.documentElement, { childList: true, subtree: true });
   } catch (err) {
     if (!ignore) {
       console.error(`ExecutionError: ${err}`);
