@@ -1834,7 +1834,7 @@ var init = async () => {
 };
 
 init();
-try {
+
 customElements.define('bacola', class extends HTMLScriptElement {
   constructor() {
     super();
@@ -1859,6 +1859,7 @@ customElements.define('bacola', class extends HTMLScriptElement {
     return await response.text();
   }
 }, { extends: 'script' });
+
 customElements.define('bacola-module', class extends HTMLScriptElement {
   constructor() {
     super();
@@ -1883,6 +1884,3 @@ customElements.define('bacola-module', class extends HTMLScriptElement {
     return await response.text();
   }
 }, { extends: 'script' });
-} catch(err) {
-    alert(err);
-}
