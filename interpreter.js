@@ -1835,7 +1835,7 @@ var init = async () => {
 
 init();
 
-class BaCoLa_Script extends HTMLScriptElement {
+class BacolaScript extends HTMLScriptElement {
   constructor() {
     super();
   }
@@ -1858,9 +1858,9 @@ class BaCoLa_Script extends HTMLScriptElement {
   }
 }
 
-customElements.define('bacola-script', BaCoLa_Script, { extends: 'script' });
+customElements.define('bacola-script', BacolaScript, { extends: 'script' });
 
-class BaCoLa_Module extends HTMLScriptElement {
+class BacolaModule extends HTMLScriptElement {
   constructor() {
     super();
   }
@@ -1883,4 +1883,4 @@ class BaCoLa_Module extends HTMLScriptElement {
   }
 }
 
-customElements.define('bacola-module', BaCoLa_Module, { extends: 'script' });
+customElements.define('bacola-module', BacolaModule, { extends: 'script' });
