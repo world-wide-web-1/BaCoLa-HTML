@@ -1869,7 +1869,7 @@ const observer = new MutationObserver((mutations) => {
       if (node.nodeType === Node.ELEMENT_NODE) {
         processScriptElement(node);
         if (node.querySelectorAll) {
-          node.querySelectorAll('script[type="text/bacola"], script[type="text/bacola-module"]').forEach(processScriptElement);
+          node.querySelectorAll('script[type="text/bacola-script"], script[type="text/bacola-module"]').forEach(processScriptElement);
         }
       }
     });
