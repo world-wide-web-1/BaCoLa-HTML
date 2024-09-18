@@ -23,10 +23,20 @@
 > > ```
 > > executeBaCoLa(src, 1);
 > > ```
-> > By default, all `<bacola_module>` and `<bacola>` tags are ran in order when the window loads.
+> > BaCoLa scripts and modules are ran using the `<script>` tag:
 > > ```
-> > <bacola_module src="[path]"></bacola_module>
-> > <bacola src="[path]"></bacola>
+> > <script is="bacola-module" src="[path]"></script>
+> > <script is="bacola-script" src="[path]"></script>
+> > ```
+> > And, because of this, you can also run it inside the script tag as shown:
+> > ```
+> > <script is="bacola-module">
+> >   print = "Hello, BaCoLa Module!".
+> > </script>
+> >
+> > <script is="bacola-script">
+> >   print = "Hello, BaCoLa!".
+> > </script>
 > > ```
 > > [arrays_documentation.md](modules/arrays_documentation.md)\
 > > [math_documentation.md](modules/math_documentation.md)\
