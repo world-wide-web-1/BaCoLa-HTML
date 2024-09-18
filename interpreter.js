@@ -1841,9 +1841,7 @@ class BaCoLa_Script extends HTMLScriptElement {
   }
 
   async connectedCallback() {
-    setTimeout(() => {
-      await this.loadContent();
-    });
+    await this.loadContent();
   }
 
   async loadContent() {
@@ -1860,7 +1858,7 @@ class BaCoLa_Script extends HTMLScriptElement {
   }
 }
 
-customElements.define('bacola', BaCoLa_Script, { extends: 'script' });
+customElements.define('bacola-script', BaCoLa_Script, { extends: 'script' });
 
 class BaCoLa_Module extends HTMLScriptElement {
   constructor() {
@@ -1868,9 +1866,7 @@ class BaCoLa_Module extends HTMLScriptElement {
   }
 
   async connectedCallback() {
-    setTimeout(() => {
-      await this.loadContent();
-    });
+    await this.loadContent();
   }
 
   async loadContent() {
