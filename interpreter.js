@@ -1810,21 +1810,21 @@ async function executeBaCoLa(src, level) {
 }
 
 var init = async () => {
-  try {
+  //try {
     var data = await fetch("https://raw.githubusercontent.com/world-wide-web-1/BaCoLa-HTML/refs/heads/main/language");
     var program = await data.text();
     let _l = compileLines(program, syntaxoptions);
     for (let [i, line] of _l.entries()) {
       await readFunction(line, 2, i + 1);
     }
-  } catch (err) {
+  /*} catch (err) {
     if (!ignore) {
       console.error("%s", `ExecutionError: ${err}`);
       if (variables.stopOnError.value) {
         return;
       }
     }
-  }
+  }*/
 };
 
 init();
