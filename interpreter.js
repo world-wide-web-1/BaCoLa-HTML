@@ -1845,7 +1845,7 @@ class Bacola extends HTMLScriptElement {
   }
 
   async loadContent() {
-    const program = this.getAttribute('src') ? await this.fetchContent(this.getAttribute('src')) : this.innerText;
+    const program = this.hasAttribute('src') ? await this.fetchContent(this.getAttribute('src')) : this.innerText;
     const lines = compileLines(program, syntaxoptions);
     for (let [i, line] of lines.entries()) {
       await readFunction(line, variables.executionLevel.value, i + 1);
@@ -1868,7 +1868,7 @@ class BacolaModule extends HTMLScriptElement {
   }
 
   async loadContent() {
-    const program = this.getAttribute('src') ? await this.fetchContent(this.getAttribute('src')) : this.innerText;
+    const program = this.hasAttribute('src') ? await this.fetchContent(this.getAttribute('src')) : this.innerText;
     const lines = compileLines(program, syntax);
     for (let [i, line] of lines.entries()) {
       await readFunction(line, 1, i + 1);
