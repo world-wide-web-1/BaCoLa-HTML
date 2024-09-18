@@ -25,19 +25,20 @@
 > > ```
 > > BaCoLa scripts and modules are ran using the `<script>` tag:
 > > ```
-> > <script is="bacola-module" src="[path]"></script>
-> > <script is="bacola-script" src="[path]"></script>
+> > <script type="text/bacola-module" src="[path]"></script>
+> > <script type="text/bacola-script" src="[path]"></script>
 > > ```
 > > And, because of this, you can also run it inside the script tag as shown:
 > > ```
-> > <script is="bacola-module">
+> > <script type="text/bacola-module">
 > >   print = "Hello, BaCoLa Module!".
 > > </script>
 > >
-> > <script is="bacola-script">
+> > <script type="text/bacola-script">
 > >   print = "Hello, BaCoLa!".
 > > </script>
 > > ```
+> > And also, you can add the `defer` attribute to wait for the DOM to finish loading.\
 > > [arrays_documentation.md](modules/arrays_documentation.md)\
 > > [math_documentation.md](modules/math_documentation.md)\
 > > [dom_documentation.md](modules/dom_documentation.md)
