@@ -1807,7 +1807,7 @@ const processBacola = async (element, type, executionLevel) => {
     }
   } catch (err) {
     if (!ignore) {
-      console.error(ExecutionError: ${err});
+      console.error(`ExecutionError: ${err}`);
       if (variables.stopOnError.value) {
         return;
       }
@@ -1835,6 +1835,7 @@ const handleScriptElement = (element) => {
   }
 };
 
+// Ensure init is called after all functions are defined
 const init = async () => {
   try {
     var data = await fetch("language");
