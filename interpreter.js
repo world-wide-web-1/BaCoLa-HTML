@@ -1790,6 +1790,31 @@ function compileLines(txt,c) {
 
 }
 
+const fetchContent = async (src) => {
+  const response = await fetch(src);
+  return await response.text();
+};
+
+const processBacola = async (element, type, executionLevel) => {
+  try {
+    const program = element.hasAttribute('src') 
+      ? await fetchContent(element.getAttribute('src')) 
+      : element.innerText.trim();
+    
+    const lines = compileLines(program, type === 'script' ? syntaxoptions : syntax);
+    for (let [i, line] of lines.entries()) {
+      await readFunction(line, executionLevel, i + 1);
+    }
+  } catch (err) {
+    if (!ignore) {
+      console.error(ExecutionError: ${err});
+      if (variables.stopOnError.value) {
+        return;
+      }
+    }
+  }
+};
+
 const handleScriptElement = (element) => {
   if (element.tagName === 'SCRIPT') {
     const type = element.type;
