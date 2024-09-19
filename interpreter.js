@@ -1790,79 +1790,42 @@ function compileLines(txt,c) {
 
 }
 
-const fetchContent = async (src) => {
-  const response = await fetch(src);
-  return await response.text();
-};
-
-const processBacola = async (element, type, executionLevel) => {
+async function executeBaCoLa(src, level) {
   try {
-    const program = element.hasAttribute('src') 
-      ? await fetchContent(element.getAttribute('src')) 
-      : element.innerText.trim();
-    
-    const lines = compileLines(program, type === 'script' ? syntaxoptions : syntax);
-    for (let [i, line] of lines.entries()) {
-      await readFunction(line, executionLevel, i + 1);
+    var data = await fetch("language");
+    var program = await data.text();
+    let _l = compileLines(program, syntaxoptions);
+    for (let [i, line] of _l.entries()) {
+      await readFunction(line, 2, i + 1);
+    }
+    var data = await fetch(src);
+    var program = await data.text();
+    _l = compileLines(program, syntax);
+
+    for (let [i, line] of _l.entries()) {
+      await readFunction(line, level ? level : 0, i + 1);
     }
   } catch (err) {
     if (!ignore) {
-      console.error(`ExecutionError: ${err}`);
+      console.error("%s", `ExecutionError: ${err}`);
       if (variables.stopOnError.value) {
         return;
       }
     }
   }
-};
+}
 
-const handleScriptElement = (element) => {
-  if (element.tagName === 'SCRIPT') {
-    const type = element.type;
-    const isBacolaScript = type === 'text/bacola-script';
-    const isBacolaModule = type === 'text/bacola-module';
-    if (isBacolaScript || isBacolaModule) {
-      const executionLevel = isBacolaScript ? variables.executionLevel.value : 1;
-      const handler = () => processBacola(element, type, executionLevel);
-      if (element.src) {
-        element.addEventListener('load', handler);
-        if (element.readyState === 'complete' || element.readyState === 'loaded') {
-          handler();
-        }
-      } else {
-        handler();
-      }
-    }
-  }
-};
-
-// Ensure init is called after all functions are defined
-const init = async () => {
+var init = async () => {
   try {
     var data = await fetch("language");
     var program = await data.text();
-    let lines = compileLines(program, syntaxoptions);
-    for (let [i, line] of lines.entries()) {
+    let _l = compileLines(program, syntaxoptions);
+    for (let [i, line] of _l.entries()) {
       await readFunction(line, 2, i + 1);
     }
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('script[type="text/bacola-script"], script[type="text/bacola-module"]')
-        .forEach(handleScriptElement);
-      const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          mutation.addedNodes.forEach((node) => {
-            if (node.nodeType === Node.ELEMENT_NODE) {
-              handleScriptElement(node);
-              node.querySelectorAll('script[type="text/bacola-script"], script[type="text/bacola-module"]')
-                .forEach(handleScriptElement);
-            }
-          });
-        });
-      });
-      observer.observe(document.documentElement, { childList: true, subtree: true });
-    });
   } catch (err) {
     if (!ignore) {
-      console.error(`ExecutionError: ${err}`);
+      console.error("%s", `ExecutionError: ${err}`);
       if (variables.stopOnError.value) {
         return;
       }
@@ -1871,3 +1834,53 @@ const init = async () => {
 };
 
 init();
+
+class BacolaScript extends HTMLScriptElement {
+  constructor() {
+    super();
+  }
+
+  async connectedCallback() {
+    await this.loadContent();
+  }
+
+  async loadContent() {
+    const program = this.hasAttribute('src') ? await this.fetchContent(this.getAttribute('src')) : this.innerText;
+    const lines = compileLines(program, syntaxoptions);
+    for (let [i, line] of lines.entries()) {
+      await readFunction(line, variables.executionLevel.value, i + 1);
+    }
+  }
+
+  async fetchContent(src) {
+    const response = await fetch(src);
+    return await response.text();
+  }
+}
+
+customElements.define('bacola-script', BacolaScript, { extends: 'script' });
+
+class BacolaModule extends HTMLScriptElement {
+  constructor() {
+    super();
+  }
+
+  async connectedCallback() {
+    await this.loadContent();
+  }
+
+  async loadContent() {
+    const program = this.hasAttribute('src') ? await this.fetchContent(this.getAttribute('src')) : this.innerText;
+    const lines = compileLines(program, syntax);
+    for (let [i, line] of lines.entries()) {
+      await readFunction(line, 1, i + 1);
+    }
+  }
+
+  async fetchContent(src) {
+    const response = await fetch(src);
+    return await response.text();
+  }
+}
+
+customElements.define('bacola-module', BacolaModule, { extends: 'script' });
