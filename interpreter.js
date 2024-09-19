@@ -1824,7 +1824,7 @@ const handleScriptElement = (element) => {
       const executionLevel = isBacolaScript ? variables.executionLevel.value : 1;
       const handler = () => processBacola(element, type, executionLevel);
       if (element.src) {
-        element.addEventListener('load', handler);
+        handler();
       } else {
         handler();
       }
